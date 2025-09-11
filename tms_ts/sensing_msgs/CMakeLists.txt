@@ -30,6 +30,7 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/Zx200CollisionObjectsIc120.msg"
   "msg/Flgs.msg"
   "msg/Flgs202506.msg"
+  "msg/Flgs202508.msg"
   "msg/DigCycle.msg"
   "msg/DigLocations.msg"
   "msg/ReleaseAngle.msg"
