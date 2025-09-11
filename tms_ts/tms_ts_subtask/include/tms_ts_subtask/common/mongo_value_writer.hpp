@@ -104,7 +104,7 @@ public:
             if (matched > 0 && modified > 0)
             {
               std::cout << "[MongoValueWriter] Successfully updated record_name [" << record_name.value()
-                        << "], set [" << param_name.value() << "] to [" << input_value_str.value() << "]" << std::endl;
+              << "], set [" << param_name.value() << "] to [" << input_value_str.value() << "]" << std::endl;
               return NodeStatus::SUCCESS;
             }
             not_found_count++;

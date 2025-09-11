@@ -113,17 +113,17 @@ def launch_setup(context, *args, **kwargs):
               namespace = 'zx200'),
         Node(
               package='tms_ts_subtask',
-              executable='subtask_zx200_follow_waypoints_server',
+              executable='subtask_zx200_follow_waypoints',
               output='screen',
               namespace = 'zx200'),
         Node(
               package='tms_ts_subtask',
-              executable='subtask_zx200_navigate_anywhere_server',
+              executable='subtask_zx200_navigate_anywhere',
               output='screen',
               namespace = 'zx200'),
         Node(
               package='tms_ts_subtask',
-              executable='subtask_zx200_navigate_through_poses_server',
+              executable='subtask_zx200_navigate_through_poses',
               output='screen',
               namespace = 'zx200'),
         

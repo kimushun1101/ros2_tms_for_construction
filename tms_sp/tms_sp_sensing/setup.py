@@ -26,6 +26,7 @@ setup(
             "sample = tms_sp_sensing.sample:main",
             "tms_sp_flgs = tms_sp_sensing.tms_sp_flgs:main",
             "tms_sp_flgs_202506 = tms_sp_sensing.tms_sp_flgs_202506:main",
+            "tms_sp_flgs_202508 = tms_sp_sensing.tms_sp_flgs_202508:main",
 
             "tms_sp_navigate_anywhere = tms_sp_sensing.tms_sp_navigate_anywhere:main",
             "tms_sp_navigate_anywhere_deg = tms_sp_sensing.tms_sp_navigate_anywhere_deg:main",

@@ -50,21 +50,48 @@ class UpdateDB_Parameter(Node):
         msg_fields_and_types = msg.get_fields_and_field_types()
         msg_fields = list(msg_fields_and_types.keys())
 
-        for key, value in parameter_info.items():
-           if key != "_id" and key!="model_name" and key != "type" and key != "record_name":
-                if key in msg.keep_val_flgs:
-                    # print(f"msga.{key}")
-                    update_parameter_info[key] = value
-                elif key.lower() in msg_fields:
-                    # print(f"msgb.{key}")
-                    lower_key = key.lower()
-                    update_parameter_info[key] = eval(f"msg.{lower_key}")
+        # ログ用のリスト
+        updated_fields = []
+        kept_fields = []
+
+        # msgに含まれているフィールドのみを更新対象とする
+        for field in msg_fields:
+            if field == 'record_name' or field == 'keep_val_flgs':
+                continue  # record_nameとkeep_val_flgsは更新対象外
+            
+            # parameter_infoに対応するキーがあるかチェック
+            matching_key = None
+            for key in parameter_info.keys():
+                if key.lower() == field.lower():
+                    matching_key = key
+                    break
+            
+            if matching_key and matching_key not in ["_id", "model_name", "type", "record_name"]:
+                if matching_key in msg.keep_val_flgs:
+                    # keep_val_flgsに含まれている場合は既存の値を保持
+                    old_value = parameter_info[matching_key]
+                    update_parameter_info[matching_key] = old_value
+                    kept_fields.append(f"{matching_key}: {old_value}")
                 else:
-                    # print(f"msgc.{key}")
-                    update_parameter_info[key] = value 
+                    # msgの値で更新
+                    new_value = getattr(msg, field)
+                    old_value = parameter_info[matching_key]
+                    update_parameter_info[matching_key] = new_value
+                    updated_fields.append(f"{matching_key}: {old_value} -> {new_value}")
 
         update_query = {"$set": update_parameter_info}
-        collection.update_one(query, update_query)
+        result = collection.update_one(query, update_query)
+        
+        # 更新結果のログ出力
+        if result.matched_count > 0:
+            log_msg = f"Successfully updated parameters for record_name: {msg.record_name}"
+            if updated_fields:
+                log_msg += f", Updated: [{', '.join(updated_fields)}]"
+            if kept_fields:
+                log_msg += f", Kept: [{', '.join(kept_fields)}]"
+            self.get_logger().info(log_msg)
+        else:
+            self.get_logger().warn(f"No matching record found for record_name: {msg.record_name}")
 
 def main(args=None):
     rclpy.init(args=args)
