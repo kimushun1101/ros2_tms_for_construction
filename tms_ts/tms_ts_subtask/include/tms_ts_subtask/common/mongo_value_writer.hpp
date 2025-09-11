@@ -103,66 +103,9 @@ public:
             auto modified = result->modified_count();
             if (matched > 0 && modified > 0)
             {
-              // 書き込んだ後に確認
-              auto verify_doc = collection.find_one(filter);
-              if (verify_doc)
-              {
-                  auto view = verify_doc->view();
-                  auto it = view.find(param_name.value());
-                  if (it != view.end())
-                  {
-                      std::string actual_value_str;
-                      // 型に応じて値を取得
-                      if (it->type() == bsoncxx::type::k_bool)
-                      {
-                          bool actual_value = it->get_bool().value;
-                          actual_value_str = actual_value ? "true" : "false";
-                      }
-                      else if (it->type() == bsoncxx::type::k_double)
-                      {
-                          double actual_value = it->get_double().value;
-                          actual_value_str = std::to_string(actual_value);
-                      }
-                      else if (it->type() == bsoncxx::type::k_int32)
-                      {
-                          int32_t actual_value = it->get_int32().value;
-                          actual_value_str = std::to_string(actual_value);
-                      }
-                      else if (it->type() == bsoncxx::type::k_utf8)
-                      {
-                          actual_value_str = std::string(it->get_utf8().value);
-                      }
-                      else
-                      {
-                          std::cout << "[MongoValueWriter] WARNING: Unsupported BSON type during verification." << std::endl;
-                          return NodeStatus::FAILURE;
-                      }
-                      
-                      if (actual_value_str == input_value_str.value())
-                      {
-                          std::cout << "[MongoValueWriter] Successfully verified record_name [" << record_name.value()
-                                    << "], " << param_name.value() << " = " << actual_value_str << std::endl;
-                          return NodeStatus::SUCCESS;
-                      }
-                      else
-                      {
-                          std::cout << "[MongoValueWriter] WARNING: Verification failed for param [" << param_name.value()
-                                    << "]. Expected [" << input_value_str.value() << "] but found [" << actual_value_str << "]" << std::endl;
-                          return NodeStatus::FAILURE;
-                      }
-                  }
-                  else
-                  {
-                      std::cout << "[MongoValueWriter] WARNING: Field [" << param_name.value()
-                                << "] not found during verification." << std::endl;
-                      return NodeStatus::FAILURE;
-                  }
-              }
-              else
-              {
-                  std::cout << "[MongoValueWriter] WARNING: Could not retrieve document for verification." << std::endl;
-                  return NodeStatus::FAILURE;
-              }
+              std::cout << "[MongoValueWriter] Successfully updated record_name [" << record_name.value()
+              << "], set [" << param_name.value() << "] to [" << input_value_str.value() << "]" << std::endl;
+              return NodeStatus::SUCCESS;
             }
             not_found_count++;
             if (not_found_count >= kMaxNotFoundRetries)
